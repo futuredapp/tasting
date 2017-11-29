@@ -1,15 +1,17 @@
-package com.thefuntasty.taste;
+package com.thefuntasty.tasting;
 
 import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class TasteTestingSpoonWrapper {
+public class TastingSpoonWrapper {
 
-	private TasteTestingSpoonWrapper() {
+	private TastingSpoonWrapper() {
 	}
 
 	private static final String TEST_CASE_CLASS_JUNIT_3 = "android.test.InstrumentationTestCase";
@@ -21,7 +23,7 @@ public class TasteTestingSpoonWrapper {
 	private static final int MARSHMALLOW_API_LEVEL = 23;
 
 	public static File getScreenshotDirectory(String screenshotTitle) {
-		File directory = new File("/sdcard/app_spoon-screenshots");
+		File directory = new File(Environment.getExternalStorageDirectory().getPath()+"/app_spoon-screenshots");
 
 		StackTraceElement testClass = findTestClassTraceElement(Thread.currentThread().getStackTrace());
 		String className = testClass.getClassName().replaceAll("[^A-Za-z0-9._-]", "_");
@@ -44,9 +46,12 @@ public class TasteTestingSpoonWrapper {
 		if (!parent.exists()) {
 			createDir(parent);
 		}
+		if (!dir.exists() && !dir.mkdirs()) {
+		Log.e("TASTING","Unable to create screenshot directory");
+		}
 	}
 
-	static StackTraceElement findTestClassTraceElement(StackTraceElement[] trace) {
+	private static StackTraceElement findTestClassTraceElement(StackTraceElement[] trace) {
 		for (int i = trace.length - 1; i >= 0; i--) {
 			StackTraceElement element = trace[i];
 			if (TEST_CASE_CLASS_JUNIT_3.equals(element.getClassName()) //

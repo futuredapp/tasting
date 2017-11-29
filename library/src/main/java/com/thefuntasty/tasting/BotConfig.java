@@ -1,8 +1,8 @@
-package com.thefuntasty.taste;
+package com.thefuntasty.tasting;
 
 import android.text.TextUtils;
 
-public class TasteTestingConfig {
+public class BotConfig {
 
 	private String packageName;
 
@@ -11,7 +11,7 @@ public class TasteTestingConfig {
 	private int scrollThreshold = 10;
 	private int scrollTimeout = 2000;
 
-	public TasteTestingConfig(String packageName) {
+	public BotConfig(String packageName) {
 		this.packageName = packageName;
 	}
 
@@ -49,7 +49,7 @@ public class TasteTestingConfig {
 
 	public String getPackageName() {
 		if (TextUtils.isEmpty(packageName)) {
-			throw new RuntimeException("Setting package name required. Use TasteTestingConfig.setPackageName()");
+			throw new RuntimeException("Setting package name required. Use BotConfig.setPackageName()");
 		}
 		return packageName;
 	}

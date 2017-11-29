@@ -1,4 +1,4 @@
-package com.thefuntasty.taste;
+package com.thefuntasty.tasting;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,23 +8,24 @@ import android.support.test.uiautomator.UiDevice;
 
 import org.junit.Before;
 
-public abstract class TasteTestingScenario {
+public abstract class Scenario {
 
 	protected UiDevice testDevice;
-	protected TasteTestingRobot robot;
-	protected TasteTestingConfig config;
+	protected Bot robot;
+	protected BotConfig botConfig;
 
 	@Before
 	public void setUp() throws RemoteException {
-		// Create config instance
+		// Create botConfig instance
 		String packageName = getPackageName();
-		config = new TasteTestingConfig(packageName);
+		botConfig = new BotConfig(packageName);
 
+		// Here you can delete shared preferences or databases to make tests run from same initial state
 		beforeSetUp();
 
 		// Initialize UiDevice instance
 		testDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-		robot = new TasteTestingRobot(testDevice, config);
+		robot = new Bot(testDevice, botConfig);
 
 		if (!testDevice.isScreenOn()) {
 			testDevice.wakeUp();

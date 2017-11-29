@@ -1,13 +1,13 @@
-package com.thefuntasty.taste;
+package com.thefuntasty.tasting;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class TasteDirection {
+public class ScrollDirection {
 
-	private TasteDirection() {
+	private ScrollDirection() {
 
 	}
 
