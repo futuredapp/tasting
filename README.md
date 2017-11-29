@@ -1,4 +1,4 @@
-# Taste #
+# Tasting #
 
 Taste is helper library for Android developers at FUNTASTY
 
