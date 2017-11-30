@@ -1,11 +1,16 @@
 buildscript {
+    ext.kotlin_version = '1.1.60'
     repositories {
         jcenter()
         google()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.jaredsburrows:gradle-spoon-plugin:1.0.0"
     }
 }
 
