@@ -1,8 +1,7 @@
-package com.penguin.intergalactic.eatsample
+package com.thefuntasty.tasting.sample
 
 import android.support.test.runner.AndroidJUnit4
-import com.thefuntasty.tasting.sample.BaseScenario
-import com.thefuntasty.tasting.sample.R
+
 import org.junit.Test
 import org.junit.runner.RunWith
 

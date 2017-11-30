@@ -1,8 +1,9 @@
 package com.thefuntasty.tasting.sample
 
-import com.penguin.intergalactic.sample.R
+import com.thefuntasty.tasting.Scenario
 
-open class BaseScenario : TasteTestingScenario() {
+
+open class BaseScenario : Scenario() {
 
     //TODO START ALL TESTS via terminal using ./gradlew spoonDebug
 
@@ -14,8 +15,8 @@ open class BaseScenario : TasteTestingScenario() {
     override fun beforeSetUp() {
         //TODO configure testing or delete persistent data here
         //if you want to have clean starts of application before every test
-        config.setscrollThreshold(20)
-        config.viewTimeout = 10000
+        botConfig.setscrollThreshold(20)
+        botConfig.viewTimeout = 10000
     }
 
     override fun afterSetUp() {

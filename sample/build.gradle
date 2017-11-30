@@ -37,4 +37,5 @@ dependencies {
     //TODO add test runner and spoon-client dependencies
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
+    androidTestImplementation project(':library')
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:tools="http://schemas.android.com/tools"
+	package="com.thefuntasty.tasting.sample">
+	<!--TODO add androidTest manifest with following line, if your projects has minsdk<18-->
+   <uses-sdk tools:overrideLibrary="com.thefuntasty.tasting.sample,android.support.test.uiautomator.v18"/>
+</manifest>
