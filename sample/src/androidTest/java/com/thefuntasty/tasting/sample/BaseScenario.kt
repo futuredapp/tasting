@@ -17,6 +17,6 @@ open class BaseScenario : Scenario() {
     }
 
     override fun afterSetUp() {
-        robot.waitForId(robot.getViewId(R.id.login_button))
+        bot.waitForId(bot.getViewId(R.id.login_button))
     }
 }
