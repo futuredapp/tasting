@@ -10,7 +10,6 @@ import org.junit.Before;
 
 public abstract class Scenario {
 
-	protected UiDevice testDevice;
 	protected Bot bot;
 	protected BotConfig botConfig;
 
@@ -24,7 +23,7 @@ public abstract class Scenario {
 		beforeSetUp();
 
 		// Initialize UiDevice instance
-		testDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+		UiDevice testDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 		bot = new Bot(testDevice, botConfig);
 
 		if (!testDevice.isScreenOn()) {
