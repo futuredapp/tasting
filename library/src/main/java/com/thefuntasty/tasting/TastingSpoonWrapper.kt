@@ -5,7 +5,8 @@ import android.os.Environment
 import android.util.Log
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 object TastingSpoonWrapper {
 
