@@ -3,9 +3,16 @@ package com.thefuntasty.tasting
 import android.content.Context
 import android.os.RemoteException
 import android.support.test.InstrumentationRegistry
-import android.support.test.uiautomator.*
+import android.support.test.uiautomator.By
+import android.support.test.uiautomator.StaleObjectException
+import android.support.test.uiautomator.UiDevice
+import android.support.test.uiautomator.UiObject2
+import android.support.test.uiautomator.Until
 import com.github.javafaker.Faker
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
 
 class Bot(private val testDevice: UiDevice) {
