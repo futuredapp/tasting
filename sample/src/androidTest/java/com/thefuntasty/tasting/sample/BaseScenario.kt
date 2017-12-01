@@ -7,13 +7,11 @@ open class BaseScenario : Scenario() {
 
     //TODO START ALL TESTS via terminal using ./gradlew spoonDebug
 
-    override fun getPackageName() = "com.thefuntasty.tasting.sample"
-
     override fun beforeSetUp() {
         //TODO configure testing or delete persistent data here
         //if you want to have clean starts of application before every test
-        botConfig.setscrollThreshold(20)
-        botConfig.viewTimeout = 10000
+        bot.scrollThreshold = 20
+        bot.viewTimeout = 10000
     }
 
     override fun afterSetUp() {

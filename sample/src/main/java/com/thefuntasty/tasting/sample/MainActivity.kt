@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fab.setOnClickListener { view ->
             Snackbar.make(view, message_field.text, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-            message_view.text=message_field.text
+            message_view.text = message_field.text
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
 
         login_button.setOnClickListener {
-            login_check.visibility=View.VISIBLE
+            login_check.visibility = View.VISIBLE
         }
     }
 

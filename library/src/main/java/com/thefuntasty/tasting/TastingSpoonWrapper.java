@@ -23,7 +23,7 @@ public class TastingSpoonWrapper {
 	private static final int MARSHMALLOW_API_LEVEL = 23;
 
 	public static File getScreenshotDirectory(String screenshotTitle) {
-		File directory = new File(Environment.getExternalStorageDirectory().getPath()+"/app_spoon-screenshots");
+		File directory = new File(Environment.getExternalStorageDirectory().getPath() + "/app_spoon-screenshots");
 
 		StackTraceElement testClass = findTestClassTraceElement(Thread.currentThread().getStackTrace());
 		String className = testClass.getClassName().replaceAll("[^A-Za-z0-9._-]", "_");
@@ -47,7 +47,7 @@ public class TastingSpoonWrapper {
 			createDir(parent);
 		}
 		if (!dir.exists() && !dir.mkdirs()) {
-		Log.e("TASTING","Unable to create screenshot directory");
+			Log.e("TASTING", "Unable to create screenshot directory");
 		}
 	}
 

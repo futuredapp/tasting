@@ -26,14 +26,14 @@ class SampleScenario : BaseScenario() {
     fun updateMessage() {
         val message = bot.getRandomString(64)
 
-        bot.writeById(bot.getViewId(R.id.message_field),message)
+        bot.writeById(bot.getViewId(R.id.message_field), message)
         bot.tapById(bot.getViewId(R.id.fab))
 
-        bot.textInIdEquals(bot.getViewId(R.id.snackbar_text),message)
+        bot.textInIdEquals(bot.getViewId(R.id.snackbar_text), message)
         bot.takeScreenshot("messageSent")
 
         bot.tapByDescription("Open navigation drawer")
-        bot.textInIdEquals(bot.getViewId(R.id.message_view),message)
+        bot.textInIdEquals(bot.getViewId(R.id.message_view), message)
         bot.takeScreenshot("messageShown")
     }
 

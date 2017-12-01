@@ -22,19 +22,25 @@ public class Bot {
 
 	private Context context;
 	private UiDevice testDevice;
-	private BotConfig botConfig;
+	protected String testedPackageName;
 	private Faker faker = new Faker();
 
-	public Bot(UiDevice testDevice, BotConfig botConfig) {
+	// Public bot settings
+	public int viewTimeout = 5000;
+	public int scrollSteps = 10;
+	public int scrollThreshold = 10;
+	public int scrollTimeout = 2000;
+
+	public Bot(UiDevice testDevice) {
 		this.context = InstrumentationRegistry.getTargetContext();
+		testedPackageName = context.getPackageName();
 		this.testDevice = testDevice;
-		this.botConfig = botConfig;
 	}
 
 	// Actions
 	public void tapById(String viewId) {
 		try {
-			testDevice.wait(Until.findObject(By.res(botConfig.getPackageName(), viewId)), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with id \"" + viewId + "\" not found", e);
@@ -45,7 +51,7 @@ public class Bot {
 
 	public void tapByText(String text) {
 		try {
-			testDevice.wait(Until.findObject(By.text(text)), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.text(text)), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with text \"" + text + "\" not found", e);
@@ -56,7 +62,7 @@ public class Bot {
 
 	public void tapByContainedText(String text) {
 		try {
-			testDevice.wait(Until.findObject(By.textContains(text)), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.textContains(text)), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with text that contains \"" + text + "\" not found", e);
@@ -67,7 +73,7 @@ public class Bot {
 
 	public void tapByDescription(String contentDescription) {
 		try {
-			testDevice.wait(Until.findObject(By.desc(contentDescription)), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.desc(contentDescription)), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with content description \"" + contentDescription + "\" not found", e);
@@ -78,7 +84,7 @@ public class Bot {
 
 	public void tapByContainedInDescription(String contentDescription) {
 		try {
-			testDevice.wait(Until.findObject(By.descContains(contentDescription)), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.descContains(contentDescription)), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with content description that contains \"" + contentDescription + "\" not found", e);
@@ -89,7 +95,7 @@ public class Bot {
 
 	public void writeByText(String findText, String writeText) {
 		try {
-			testDevice.wait(Until.findObject(By.text(findText).clazz("android.widget.EditText")), botConfig.getViewTimeout()).setText(writeText);
+			testDevice.wait(Until.findObject(By.text(findText).clazz("android.widget.EditText")), viewTimeout).setText(writeText);
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with text \"" + findText + "\" not found", e);
@@ -100,7 +106,7 @@ public class Bot {
 
 	public void writeById(String viewId, String writeText) {
 		try {
-			testDevice.wait(Until.findObject(By.res(botConfig.getPackageName(), viewId).clazz("android.widget.EditText")), botConfig.getViewTimeout()).setText(writeText);
+			testDevice.wait(Until.findObject(By.res(testedPackageName, viewId).clazz("android.widget.EditText")), viewTimeout).setText(writeText);
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with id \"" + viewId + "\" not found", e);
@@ -111,7 +117,7 @@ public class Bot {
 
 	public void writeByDescription(String contentDescription, String writeText) {
 		try {
-			testDevice.wait(Until.findObject(By.desc(contentDescription).clazz("android.widget.EditText")), botConfig.getViewTimeout()).setText(writeText);
+			testDevice.wait(Until.findObject(By.desc(contentDescription).clazz("android.widget.EditText")), viewTimeout).setText(writeText);
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("View with content description \"" + contentDescription + "\" not found", e);
@@ -122,7 +128,7 @@ public class Bot {
 
 	public void allowPermission() {
 		try {
-			testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_allow_button")), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_allow_button")), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("Permission dialog not found", e);
@@ -131,7 +137,7 @@ public class Bot {
 
 	public void denyPermission() {
 		try {
-			testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_deny_button")), botConfig.getViewTimeout()).click();
+			testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_deny_button")), viewTimeout).click();
 		} catch (NullPointerException e) {
 			takeScreenshot("exception");
 			throw new TastingException("Permission dialog not found", e);
@@ -144,16 +150,16 @@ public class Bot {
 
 		switch (directionType) {
 			case ScrollDirection.DOWN:
-				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, 0, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, 0, scrollSteps);
 				break;
 			case ScrollDirection.UP:
-				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight, scrollSteps);
 				break;
 			case ScrollDirection.LEFT:
-				testDevice.drag(screenWidth / 4, screenHeight / 2, screenWidth, screenHeight / 2, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 4, screenHeight / 2, screenWidth, screenHeight / 2, scrollSteps);
 				break;
 			case ScrollDirection.RIGHT:
-				testDevice.drag(screenWidth - screenWidth / 4, screenHeight / 2, 0, screenHeight / 2, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth - screenWidth / 4, screenHeight / 2, 0, screenHeight / 2, scrollSteps);
 				break;
 			default:
 				throw new TastingException("Invalid scroll direction");
@@ -166,16 +172,16 @@ public class Bot {
 
 		switch (directionType) {
 			case ScrollDirection.DOWN:
-				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 4, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 4, scrollSteps);
 				break;
 			case ScrollDirection.UP:
-				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 4 * 3, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 4 * 3, scrollSteps);
 				break;
 			case ScrollDirection.LEFT:
-				testDevice.drag(screenWidth / 4, screenHeight / 2, screenWidth / 2, screenHeight / 2, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth / 4, screenHeight / 2, screenWidth / 2, screenHeight / 2, scrollSteps);
 				break;
 			case ScrollDirection.RIGHT:
-				testDevice.drag(screenWidth - screenWidth / 4, screenHeight / 2, screenWidth / 2, screenHeight / 2, botConfig.getScrollSteps());
+				testDevice.drag(screenWidth - screenWidth / 4, screenHeight / 2, screenWidth / 2, screenHeight / 2, scrollSteps);
 				break;
 			default:
 				throw new TastingException("Invalid scroll direction");
@@ -185,13 +191,13 @@ public class Bot {
 	public void scrollUntilId(@ScrollDirection.DirectionType int directionType, String viewId) {
 		int retry = 0;
 		do {
-			if (testDevice.wait(Until.findObject(By.res(botConfig.getPackageName(), viewId)), botConfig.getScrollTimeout()) != null) {
+			if (testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), scrollTimeout) != null) {
 				return;
 			}
 			halfScroll(directionType);
 			retry++;
 		}
-		while (retry <= botConfig.getScrollThreshold());
+		while (retry <= scrollThreshold);
 		takeScreenshot("exception");
 		throw new TastingException("View with id \"" + viewId + "\" not found");
 	}
@@ -199,13 +205,13 @@ public class Bot {
 	public void scrollUntilText(@ScrollDirection.DirectionType int directionType, String text) {
 		int retry = 0;
 		do {
-			if (testDevice.wait(Until.findObject(By.text(text)), botConfig.getScrollTimeout()) != null) {
+			if (testDevice.wait(Until.findObject(By.text(text)), scrollTimeout) != null) {
 				return;
 			}
 			halfScroll(directionType);
 			retry++;
 		}
-		while (retry <= botConfig.getScrollThreshold());
+		while (retry <= scrollThreshold);
 		takeScreenshot("exception");
 		throw new TastingException("View with text \"" + text + "\" not found");
 	}
@@ -218,16 +224,16 @@ public class Bot {
 
 		switch (directionType) {
 			case ScrollDirection.DOWN:
-				testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, scrollSteps);
 				break;
 			case ScrollDirection.UP:
-				testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, scrollSteps);
 				break;
 			case ScrollDirection.LEFT:
-				testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, scrollSteps);
 				break;
 			case ScrollDirection.RIGHT:
-				testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, scrollSteps);
 				break;
 			default:
 				throw new TastingException("Invalid drag direction");
@@ -242,16 +248,16 @@ public class Bot {
 
 		switch (directionType) {
 			case ScrollDirection.DOWN:
-				testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, scrollSteps);
 				break;
 			case ScrollDirection.UP:
-				testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, scrollSteps);
 				break;
 			case ScrollDirection.LEFT:
-				testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, scrollSteps);
 				break;
 			case ScrollDirection.RIGHT:
-				testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, botConfig.getScrollSteps());
+				testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, scrollSteps);
 				break;
 			default:
 				throw new TastingException("Invalid drag direction");
@@ -514,11 +520,11 @@ public class Bot {
 	}
 
 	public UiObject2 waitForId(String viewId) {
-		return waitForId(viewId, botConfig.getViewTimeout());
+		return waitForId(viewId, viewTimeout);
 	}
 
 	public UiObject2 waitForId(String viewId, int milliseconds) {
-		UiObject2 view = testDevice.wait(Until.findObject(By.res(botConfig.getPackageName(), viewId)), milliseconds);
+		UiObject2 view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), milliseconds);
 		if (view == null) {
 			takeScreenshot("exception");
 			throw new TastingException("View with id \"" + viewId + "\" not found");
@@ -528,11 +534,11 @@ public class Bot {
 	}
 
 	public UiObject2 waitForIdOrNull(String viewId) {
-		return testDevice.wait(Until.findObject(By.res(botConfig.getPackageName(), viewId)), botConfig.getViewTimeout());
+		return testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout);
 	}
 
 	public UiObject2 waitForText(String text) {
-		return waitForText(text, botConfig.getViewTimeout());
+		return waitForText(text, viewTimeout);
 	}
 
 	public UiObject2 waitForText(String text, int milliseconds) {
@@ -546,7 +552,7 @@ public class Bot {
 	}
 
 	public UiObject2 waitForTextOrNull(String text) {
-		return testDevice.wait(Until.findObject(By.text(text)), botConfig.getViewTimeout());
+		return testDevice.wait(Until.findObject(By.text(text)), viewTimeout);
 	}
 
 	public void wait(int seconds) {
@@ -559,7 +565,7 @@ public class Bot {
 	}
 
 	public void waitForNextActivity() {
-		testDevice.waitForWindowUpdate(null, botConfig.getViewTimeout());
+		testDevice.waitForWindowUpdate(null, viewTimeout);
 	}
 
 	public String getString(int resourceId) {
