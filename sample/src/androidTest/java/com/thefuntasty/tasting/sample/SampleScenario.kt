@@ -8,7 +8,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SampleScenario : BaseScenario() {
 
-
     @Test
     fun login() {
         //TODO interact with views
@@ -36,5 +35,4 @@ class SampleScenario : BaseScenario() {
         bot.textInIdEquals(bot.getViewId(R.id.message_view), message)
         bot.takeScreenshot("messageShown")
     }
-
 }

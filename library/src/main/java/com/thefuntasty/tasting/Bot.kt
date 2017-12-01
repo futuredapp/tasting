@@ -50,7 +50,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             tapById(viewId)
         }
-
     }
 
     fun tapByText(text: String) {
@@ -62,7 +61,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             tapByText(text)
         }
-
     }
 
     fun tapByContainedText(text: String) {
@@ -74,7 +72,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             tapByContainedText(text)
         }
-
     }
 
     fun tapByDescription(contentDescription: String) {
@@ -86,7 +83,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             tapByDescription(contentDescription)
         }
-
     }
 
     fun tapByContainedInDescription(contentDescription: String) {
@@ -98,7 +94,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             tapByContainedInDescription(contentDescription)
         }
-
     }
 
     fun writeByText(findText: String, writeText: String) {
@@ -110,7 +105,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             writeByText(findText, writeText)
         }
-
     }
 
     fun writeById(viewId: String, writeText: String) {
@@ -122,7 +116,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             writeById(viewId, writeText)
         }
-
     }
 
     fun writeByDescription(contentDescription: String, writeText: String) {
@@ -134,7 +127,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             writeByText(contentDescription, writeText)
         }
-
     }
 
     fun allowPermission() {
@@ -144,7 +136,6 @@ class Bot(private val testDevice: UiDevice) {
             takeScreenshot("exception")
             throw TastingException("Permission dialog not found", e)
         }
-
     }
 
     fun denyPermission() {
@@ -154,7 +145,6 @@ class Bot(private val testDevice: UiDevice) {
             takeScreenshot("exception")
             throw TastingException("Permission dialog not found", e)
         }
-
     }
 
     fun scroll(direction: ScrollDirection) {
@@ -249,7 +239,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: RemoteException) {
             throw TastingException(e)
         }
-
     }
 
     // Assertions
@@ -262,7 +251,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notPresentByText(text)
         }
-
     }
 
     fun notPresentById(viewId: String) {
@@ -274,7 +262,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notPresentById(viewId)
         }
-
     }
 
     fun presentByText(text: String) {
@@ -286,7 +273,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             presentByText(text)
         }
-
     }
 
     fun presentById(viewId: String) {
@@ -298,7 +284,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             presentById(viewId)
         }
-
     }
 
     fun textInIdEquals(viewId: String, text: String) {
@@ -310,7 +295,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             textInIdEquals(viewId, text)
         }
-
     }
 
     fun textInIdEqualsCaseInsensitive(viewId: String, text: String) {
@@ -322,7 +306,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             textInIdEqualsCaseInsensitive(viewId, text)
         }
-
     }
 
     fun textInIdContains(viewId: String, text: String) {
@@ -334,7 +317,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             textInIdContains(viewId, text)
         }
-
     }
 
     fun textInIdDiffer(viewId: String, text: String) {
@@ -346,7 +328,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             textInIdDiffer(viewId, text)
         }
-
     }
 
     fun enabledById(viewId: String) {
@@ -358,7 +339,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             enabledById(viewId)
         }
-
     }
 
     fun disabledById(viewId: String) {
@@ -370,7 +350,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             disabledById(viewId)
         }
-
     }
 
     fun checkedById(viewId: String) {
@@ -382,7 +361,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             checkedById(viewId)
         }
-
     }
 
     fun notCheckedById(viewId: String) {
@@ -394,7 +372,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notCheckedById(viewId)
         }
-
     }
 
     fun checkedByText(text: String) {
@@ -406,7 +383,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             checkedByText(text)
         }
-
     }
 
     fun notCheckedByText(text: String) {
@@ -418,7 +394,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notCheckedByText(text)
         }
-
     }
 
     fun selectedById(viewId: String) {
@@ -430,7 +405,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             selectedById(viewId)
         }
-
     }
 
     fun notSelectedById(viewId: String) {
@@ -442,7 +416,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notSelectedById(viewId)
         }
-
     }
 
     fun selectedByText(text: String) {
@@ -454,7 +427,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             selectedByText(text)
         }
-
     }
 
     fun notSelectedByText(text: String) {
@@ -466,7 +438,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: StaleObjectException) {
             notSelectedByText(text)
         }
-
     }
 
     fun getRandomString(length: Int): String = faker.lorem().characters(length)
@@ -515,7 +486,6 @@ class Bot(private val testDevice: UiDevice) {
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
-
     }
 
     fun waitForNextActivity() {

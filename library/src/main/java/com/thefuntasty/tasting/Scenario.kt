@@ -23,7 +23,7 @@ abstract class Scenario {
         val context = InstrumentationRegistry.getContext()
         val intent = context.packageManager
                 .getLaunchIntentForPackage(bot.testedPackageName)
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)    // Clear out any previous instances
+        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
         context.startActivity(intent)
 
         // Here you can wait for your app to load

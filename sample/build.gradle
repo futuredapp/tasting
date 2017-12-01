@@ -5,6 +5,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'spoon'
 android {
     compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+
     defaultConfig {
         applicationId "com.thefuntasty.tasting.sample"
         minSdkVersion 16
@@ -13,6 +15,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,8 +31,21 @@ spoon {
     grantAllPermissions = true
 }
 
+detekt {
+    version = "1.0.0.RC5-5"
+    profile("main") {
+        config = "$projectDir/detekt.yml"
+        input = "$projectDir/src/main"
+    }
+}
+
+ktlint {
+    version = "0.13.0"
+    ignoreFailures = false
+    android = true
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'

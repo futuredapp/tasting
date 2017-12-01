@@ -2,7 +2,6 @@ package com.thefuntasty.tasting.sample
 
 import com.thefuntasty.tasting.Scenario
 
-
 open class BaseScenario : Scenario() {
 
     //TODO START ALL TESTS via terminal using ./gradlew spoonDebug

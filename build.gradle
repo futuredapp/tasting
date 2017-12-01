@@ -13,6 +13,12 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.jlleitschuh.gradle.ktlint" version "2.3.0"
+    id "io.gitlab.arturbosch.detekt" version "1.0.0.RC5-5"
+    id "com.ofg.uptodate" version "1.6.3"
+}
+
 allprojects {
     repositories {
         jcenter()
