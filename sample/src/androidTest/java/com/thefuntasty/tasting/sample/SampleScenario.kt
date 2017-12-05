@@ -10,14 +10,11 @@ class SampleScenario : BaseScenario() {
 
     @Test
     fun login() {
-        //TODO interact with views
         bot.writeById(bot.getViewId(R.id.login_field), bot.email)
         bot.writeById(bot.getViewId(R.id.password_field), bot.getRandomString(21))
         bot.tapById(bot.getViewId(R.id.login_button))
 
-        //TODO assert actions
         bot.presentById(bot.getViewId(R.id.login_check))
-        //TODO take screenshot for your report
         bot.takeScreenshot("loggedIn")
     }
 
