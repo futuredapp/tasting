@@ -8,7 +8,7 @@ import org.junit.Before
 abstract class Scenario {
 
     private val testDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    protected var bot: Bot = Bot(testDevice)
+    @JvmField protected val bot: Bot = Bot(testDevice)
 
     @Before
     fun setUp() {
