@@ -462,7 +462,7 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun waitForIdOrNull(viewId: String): UiObject2 =
+    fun waitForIdOrNull(viewId: String): UiObject2? =
             testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout.toLong())
 
     @JvmOverloads
