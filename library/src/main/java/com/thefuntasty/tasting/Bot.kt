@@ -476,7 +476,7 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun waitForTextOrNull(text: String): UiObject2 =
+    fun waitForTextOrNull(text: String): UiObject2? =
             testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
 
     fun wait(seconds: Int) {
