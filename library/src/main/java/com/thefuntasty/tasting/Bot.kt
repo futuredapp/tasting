@@ -42,108 +42,134 @@ class Bot(private val testDevice: UiDevice) {
 
     // Actions
     fun tapById(viewId: String) {
-        try {
-            testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapById(viewId)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$viewId\" not found", e)
-        } catch (e: StaleObjectException) {
-            tapById(viewId)
+            throw TastingException("View with id \"$viewId\" not found")
         }
     }
 
     fun tapByText(text: String) {
-        try {
-            testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapByText(text)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with text \"$text\" not found", e)
-        } catch (e: StaleObjectException) {
-            tapByText(text)
+            throw TastingException("View with text \"$text\" not found")
         }
     }
 
     fun tapByContainedText(text: String) {
-        try {
-            testDevice.wait(Until.findObject(By.textContains(text)), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.textContains(text)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapByContainedText(text)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with text that contains \"$text\" not found", e)
-        } catch (e: StaleObjectException) {
-            tapByContainedText(text)
+            throw TastingException("View with text that contains \"$text\" not found")
         }
     }
 
     fun tapByDescription(contentDescription: String) {
-        try {
-            testDevice.wait(Until.findObject(By.desc(contentDescription)), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.desc(contentDescription)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapByDescription(contentDescription)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with content description \"$contentDescription\" not found", e)
-        } catch (e: StaleObjectException) {
-            tapByDescription(contentDescription)
+            throw TastingException("View with content description \"$contentDescription\" not found")
         }
     }
 
     fun tapByContainedInDescription(contentDescription: String) {
-        try {
-            testDevice.wait(Until.findObject(By.descContains(contentDescription)), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.descContains(contentDescription)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapByContainedInDescription(contentDescription)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with content description that contains \"$contentDescription\" not found", e)
-        } catch (e: StaleObjectException) {
-            tapByContainedInDescription(contentDescription)
+            throw TastingException("View with content description that contains \"$contentDescription\" not found")
         }
     }
 
     fun writeByText(findText: String, writeText: String) {
-        try {
-            testDevice.wait(Until.findObject(By.text(findText).clazz("android.widget.EditText")), viewTimeout.toLong()).text = writeText
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.text(findText).clazz("android.widget.EditText")), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.text = writeText
+            } catch (e: StaleObjectException) {
+                writeByText(findText, writeText)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with text \"$findText\" not found", e)
-        } catch (e: StaleObjectException) {
-            writeByText(findText, writeText)
+            throw TastingException("View with text \"$findText\" not found")
         }
     }
 
     fun writeById(viewId: String, writeText: String) {
-        try {
-            testDevice.wait(Until.findObject(By.res(testedPackageName, viewId).clazz("android.widget.EditText")), viewTimeout.toLong()).text = writeText
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId).clazz("android.widget.EditText")), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.text = writeText
+            } catch (e: StaleObjectException) {
+                writeById(viewId, writeText)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$viewId\" not found", e)
-        } catch (e: StaleObjectException) {
-            writeById(viewId, writeText)
+            throw TastingException("View with id \"$viewId\" not found")
         }
     }
 
     fun writeByDescription(contentDescription: String, writeText: String) {
-        try {
-            testDevice.wait(Until.findObject(By.desc(contentDescription).clazz("android.widget.EditText")), viewTimeout.toLong()).text = writeText
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.desc(contentDescription).clazz("android.widget.EditText")), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.text = writeText
+            } catch (e: StaleObjectException) {
+                writeByText(contentDescription, writeText)
+            }
+        } else {
             takeScreenshot("exception")
-            throw TastingException("View with content description \"$contentDescription\" not found", e)
-        } catch (e: StaleObjectException) {
-            writeByText(contentDescription, writeText)
+            throw TastingException("View with content description \"$contentDescription\" not found")
         }
     }
 
     fun allowPermission() {
-        try {
-            testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_allow_button")), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_allow_button")), viewTimeout.toLong())
+        if (view != null) {
+            view.click()
+        } else {
             takeScreenshot("exception")
-            throw TastingException("Permission dialog not found", e)
+            throw TastingException("Permission dialog not found")
         }
     }
 
     fun denyPermission() {
-        try {
-            testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_deny_button")), viewTimeout.toLong()).click()
-        } catch (e: NullPointerException) {
+        val view = testDevice.wait(Until.findObject(By.res("com.android.packageinstaller", "permission_deny_button")), viewTimeout.toLong())
+        if (view != null) {
+            view.click()
+        } else {
             takeScreenshot("exception")
-            throw TastingException("Permission dialog not found", e)
+            throw TastingException("Permission dialog not found")
         }
     }
 
@@ -195,34 +221,6 @@ class Bot(private val testDevice: UiDevice) {
         } while (retry <= scrollThreshold)
         takeScreenshot("exception")
         throw TastingException("View with text \"$text\" not found")
-    }
-
-    fun dragViewById(direction: ScrollDirection, viewId: String) {
-        val screenWidth = testDevice.displayWidth
-        val screenHeight = testDevice.displayHeight
-        val viewX = waitForId(viewId).visibleCenter.x
-        val viewY = waitForId(viewId).visibleCenter.y
-
-        when (direction) {
-            ScrollDirection.DOWN -> testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, scrollSteps)
-            ScrollDirection.UP -> testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, scrollSteps)
-            ScrollDirection.LEFT -> testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, scrollSteps)
-            ScrollDirection.RIGHT -> testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, scrollSteps)
-        }
-    }
-
-    fun dragViewByText(direction: ScrollDirection, text: String) {
-        val screenWidth = testDevice.displayWidth
-        val screenHeight = testDevice.displayHeight
-        val viewX = waitForText(text).visibleCenter.x
-        val viewY = waitForText(text).visibleCenter.y
-
-        when (direction) {
-            ScrollDirection.DOWN -> testDevice.drag(viewX, viewY, viewX, viewY - screenHeight, scrollSteps)
-            ScrollDirection.UP -> testDevice.drag(viewX, viewY, viewX, viewY + screenHeight, scrollSteps)
-            ScrollDirection.LEFT -> testDevice.drag(viewX, viewY, viewX + screenWidth, viewY, scrollSteps)
-            ScrollDirection.RIGHT -> testDevice.drag(viewX, viewY, viewX - screenWidth, viewY, scrollSteps)
-        }
     }
 
     fun pressBack() {
