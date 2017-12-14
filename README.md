@@ -1,11 +1,11 @@
-# Taste #
+# Tasting #
 
-Taste is helper library for Android developers at FUNTASTY
+Tasting is Android library for easy acceptance testing, which features super-easy API and Spoon screenshot wrapper class, so you can easily take screenshots while running your instrumentation tests simultaneously on multiple devices and recieve pretty cool report afterwards.
 
 
 ## Instalation
 
-Check the newest version on [https://jitpack.io/#thefuntasty/taste](https://jitpack.io/#thefuntasty/taste)
+Check the newest version on [https://jitpack.io/#thefuntasty/tasting](https://jitpack.io/#thefuntasty/tasting)
 
 Add it in your root build.gradle at the end of repositories:
 
@@ -14,40 +14,79 @@ allprojects {
     repositories {
         ...
         maven { url "https://jitpack.io" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
+    dependencies {
+    	...
+    	classpath "com.jaredsburrows:gradle-spoon-plugin:1.0.0"
+    }
+}
+```
+Apply Spoon plugin:
+```groovy
+apply plugin: 'spoon'
+```
+
+Configure Spoon:
+```groovy
+spoon {
+    debug = true
+    noAnimations = true
+    grantAllPermissions = true
 }
 ```
 
 Add the dependencies you need:
-
 ```groovy
-compile 'com.github.thefuntasty:taste:core:2.0.0'
-compile 'com.github.thefuntasty:taste:mvp:2.0.0'
-compile 'com.github.thefuntasty:taste:debugdrawer:2.0.0'
-compile 'com.github.thefuntasty:taste:testing:2.0.0'
+androidTestImplementation 'com.github.thefuntasty:tasting:1.0.1'
+androidTestImplementation 'com.android.support.test:runner:1.0.1'
+androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 ```
 
 ## Usage
+1. Create BaseScenario class (extending Scenario) in androidTest directory
+2. Override beforeSetUp method where you can change bot settings or delete persistent data (so every test start from the same initial state)
+3. Override afterSetUp method where you can make bot wait for app to load
+```kotlin
+class BaseScenario : Scenario() {
 
-```java
-public class App extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Taste.init(this);
+    override fun beforeSetUp() {
+        bot.scrollThreshold = SCROLL_THRESHOLD
+        bot.viewTimeout = VIEW_TIEMOUT
+        Hawk.deleteAll()
+    }
+
+    override fun afterSetUp() {
+        bot.waitForId(bot.getViewId(R.id.login_button), LAUNCH_TIMEOUT)
     }
 }
 ```
+4. Create eg. AccountScenario class (extending BaseScenario) which will contain all tests regarding user account
+```kotlin
+@RunWith(AndroidJUnit4::class)
+class SampleScenario : BaseScenario() {
 
+    @Test
+    fun login() {
+        bot.writeById(bot.getViewId(R.id.login_field), bot.email)
+        bot.writeById(bot.getViewId(R.id.password_field), bot.getRandomString(21))
+        bot.tapById(bot.getViewId(R.id.login_button))
+
+        bot.presentById(bot.getViewId(R.id.login_check))
+        bot.takeScreenshot("loggedIn")
+    }
+}
+```
 ***
 
-## Gradle tasks
+## Run tests with Spoon
 
-1. Open Android Studio and go to: File / Settings / Build / Compiler and add these command-line options: **-PminSdk=21**
-2. In your `build.gradle` add row: **apply from: 'https://github.com/thefuntasty/taste/raw/master/common.gradle'**
-3. Locate row `minSdkVersion 16` and replace it with: `minSdkVersion minSdk(16)`
+1. Open terminal at your Android project directory
+2. Run ./gradlew spoonDebug (you can specify any other build variant eg. spoonClient)
 
-> Technical staff: release build is recognized by keystore
+## Check test results
+
+TODO
 
 ## License
 
