@@ -30,7 +30,7 @@ object TastingSpoonWrapper {
         createDir(dirMethod)
 
         val currentTimeMillis = System.currentTimeMillis()
-        val sdf = SimpleDateFormat("dd-MM-yyyy-HH-mm-ss", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-SSS", Locale.getDefault())
         val date = Date(currentTimeMillis)
 
         val screenshotName = sdf.format(date) + "_" + screenshotTitle + ".png"
