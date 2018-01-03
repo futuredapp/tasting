@@ -1,13 +1,13 @@
 # Tasting #
 
-Tasting is Android library for easy acceptance testing, which features super-easy API and Spoon screenshot wrapper class, so you can easily take screenshots while running your instrumentation tests simultaneously on multiple devices and recieve pretty cool report afterwards.
+Tasting is Android library for easy acceptance testing, which features super-easy API and [Spoon](https://github.com/square/spoon) screenshot wrapper class, so you can easily take screenshots while running your instrumentation tests simultaneously on multiple devices and recieve pretty cool report afterwards.
 
 
 ## Instalation
 
 Check the newest version on [https://jitpack.io/#thefuntasty/tasting](https://jitpack.io/#thefuntasty/tasting)
 
-Add it in your root build.gradle at the end of repositories:
+Add Jitpack and Spoon plugin to your root build.gradle:
 
 ```groovy
 allprojects {
@@ -45,7 +45,7 @@ androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 
 ## Usage
 1. Create BaseScenario class (extending Scenario) in androidTest directory
-2. Override beforeSetUp method where you can change bot settings or delete persistent data (so every test start from the same initial state)
+2. Override beforeSetUp method where you can change bot settings or delete persistent data (to make every test start from the same initial state)
 3. Override afterSetUp method where you can make bot wait for app to load
 ```kotlin
 class BaseScenario : Scenario() {
@@ -86,7 +86,10 @@ class SampleScenario : BaseScenario() {
 
 ## Check test results
 
-TODO
+1. You can see test progress and result in terminal window
+![Terminal Output](pictures/terminal.png)
+2. After finishing all tests, interactive visual test report is generated in your project directory (build/spoon-output/...), including screenshots you took with bot.takeScreenshot method, screenshot is also taken automatically when test fails, so you have more clues about what went wrong
+![Test Results](pictures/html.png)
 
 ## License
 
