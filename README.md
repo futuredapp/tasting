@@ -43,7 +43,7 @@ androidTestImplementation 'com.android.support.test:runner:1.0.1'
 androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 ```
 
-## Usage
+## Implementation
 1. Create BaseScenario class (extending Scenario) in androidTest directory
 2. Override beforeSetUp method where you can change bot settings or delete persistent data (to make every test start from the same initial state)
 3. Override afterSetUp method where you can make bot wait for app to load
@@ -79,12 +79,12 @@ class SampleScenario : BaseScenario() {
 ```
 ***
 
-## Run tests with Spoon
+## Running tests
 
 1. Open terminal at your Android project directory
 2. Run ./gradlew spoonDebug (you can specify any other build variant eg. spoonClient)
 
-## Check test results
+## Checking results
 
 1. You can see test progress and result in terminal window
 ![Terminal Output](pictures/terminal.png)
