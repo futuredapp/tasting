@@ -3,7 +3,7 @@
 Tasting is Android library for easy acceptance testing, which features super-easy API and [Spoon](https://github.com/square/spoon) screenshot wrapper class, so you can easily take screenshots while running your instrumentation tests simultaneously on multiple devices and recieve pretty cool report afterwards.
 
 
-## Instalation
+## Installation
 
 Check the newest version on [https://jitpack.io/#thefuntasty/tasting](https://jitpack.io/#thefuntasty/tasting)
 
