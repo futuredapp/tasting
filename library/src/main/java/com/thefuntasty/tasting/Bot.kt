@@ -41,6 +41,22 @@ class Bot(private val testDevice: UiDevice) {
         get() = faker.internet().safeEmailAddress()
 
     // Actions
+    fun tapByIdChild(resourceId: Int, childIndex: Int) {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong()).children.get(childIndex)
+        if (view != null) {
+            try {
+                view.click()
+            } catch (e: StaleObjectException) {
+                tapById(resourceId)
+            }
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with id \"$idString\" not found")
+        }
+    }
+
+
     fun tapById(resourceId: Int) {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
@@ -519,7 +535,7 @@ class Bot(private val testDevice: UiDevice) {
         testDevice.waitForWindowUpdate(testedPackageName, viewTimeout.toLong())
     }
 
-    fun getString(resourceId: Int): String = context.getString(resourceId)
+    private fun getString(resourceId: Int): String = context.getString(resourceId)
 
-    fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
+    private fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
 }
