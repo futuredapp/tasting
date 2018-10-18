@@ -41,19 +41,28 @@ class Bot(private val testDevice: UiDevice) {
         get() = faker.internet().safeEmailAddress()
 
     // Actions
-    fun tapByIdChild(resourceId: Int, childIndex: Int) {
-        val idString = getViewId(resourceId)
-        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong()).children.get(childIndex)
+    fun tap(view: UiObject2){
         if (view != null) {
             try {
                 view.click()
             } catch (e: StaleObjectException) {
-                tapById(resourceId)
+                tap(view)
             }
         } else {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$idString\" not found")
+            throw TastingException("View not found")
         }
+    }
+
+    fun getViewById(resourceId: Int) : UiObject2 {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
+        return view
+    }
+
+    fun getViewByText(text: String) : UiObject2 {
+        val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
+        return view
     }
 
 
