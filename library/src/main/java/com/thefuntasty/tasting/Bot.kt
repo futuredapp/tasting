@@ -41,12 +41,12 @@ class Bot(private val testDevice: UiDevice) {
         get() = faker.internet().safeEmailAddress()
 
     // Actions
-    fun tap(view: UiObject2){
-        if (view != null) {
+    fun UiObject2.tap(){
+        if (this != null) {
             try {
-                view.click()
+                this.click()
             } catch (e: StaleObjectException) {
-                tap(view)
+                this.tap()
             }
         } else {
             takeScreenshot("exception")
