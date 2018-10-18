@@ -44,14 +44,23 @@ class Bot(private val testDevice: UiDevice) {
     fun getViewById(resourceId: Int) : UiObject2 {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
-        return view
+        if (view != null) {
+            return view
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with id \"$idString\" not found")
+        }
     }
 
     fun getViewByText(text: String) : UiObject2 {
         val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
-        return view
+        if (view != null) {
+            return view
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with text \"$text\" not found")
+        }
     }
-
 
     fun tapById(resourceId: Int) {
         val idString = getViewId(resourceId)
