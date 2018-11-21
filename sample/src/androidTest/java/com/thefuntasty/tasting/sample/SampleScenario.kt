@@ -10,11 +10,11 @@ class SampleScenario : BaseScenario() {
 
     @Test
     fun login() {
-        bot.writeById(bot.getViewId(R.id.login_field), bot.email)
-        bot.writeById(bot.getViewId(R.id.password_field), bot.getRandomString(21))
-        bot.tapById(bot.getViewId(R.id.login_button))
+        bot.writeById(R.id.login_field, bot.email)
+        bot.writeById(R.id.password_field, bot.getRandomString(21))
+        bot.tapById(R.id.login_button)
 
-        bot.presentById(bot.getViewId(R.id.login_check))
+        bot.presentById(R.id.login_check)
         bot.takeScreenshot("loggedIn")
     }
 
@@ -22,14 +22,14 @@ class SampleScenario : BaseScenario() {
     fun updateMessage() {
         val message = bot.getRandomString(64)
 
-        bot.writeById(bot.getViewId(R.id.message_field), message)
-        bot.tapById(bot.getViewId(R.id.fab))
+        bot.writeById(R.id.message_field, message)
+        bot.tapById(R.id.fab)
 
-        bot.textInIdEquals(bot.getViewId(R.id.snackbar_text), message)
+        bot.textInIdEquals(R.id.snackbar_text, message)
         bot.takeScreenshot("messageSent")
 
         bot.tapByDescription("Open navigation drawer")
-        bot.textInIdEquals(bot.getViewId(R.id.message_view), message)
+        bot.textInIdEquals(R.id.message_view, message)
         bot.takeScreenshot("messageShown")
     }
 }
