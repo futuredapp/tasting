@@ -27,20 +27,8 @@ class Bot(private val testDevice: UiDevice) {
     var scrollTimeout = 2000
     var testedPackageName = context.packageName
 
-    // Fake data
-    val firstName: String
-        get() = faker.name().firstName()
+    // View actions
 
-    val lastName: String
-        get() = faker.name().lastName()
-
-    val fullName: String
-        get() = firstName + " " + lastName
-
-    val email: String
-        get() = faker.internet().safeEmailAddress()
-
-    // Actions
     fun getViewById(resourceId: Int) : UiObject2 {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
@@ -247,23 +235,23 @@ class Bot(private val testDevice: UiDevice) {
         throw TastingException("View with text \"$text\" not found")
     }
 
-    fun pressBack() {
-        testDevice.pressBack()
-    }
-
-    fun pressHome() {
-        testDevice.pressHome()
-    }
-
-    fun pressRecents() {
-        try {
-            testDevice.pressRecentApps()
-        } catch (e: RemoteException) {
-            throw TastingException(e)
+    fun getTextById(resourceId: Int): String {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
+        return if (view != null) {
+            try {
+                view.text
+            } catch (e: StaleObjectException) {
+                getTextById(resourceId)
+            }
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with id \"$idString\" not found")
         }
     }
 
-    // Assertions
+    // View Assertions
+
     fun notPresentByText(text: String) {
         try {
             assertNull("Text \"$text\" should not be present", waitForTextOrNull(text))
@@ -474,29 +462,7 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun getRandomString(length: Int): String = faker.lorem().characters(length)
-
-    fun getRandomNumber(min: Int, max: Int): String = faker.number().numberBetween(min, max).toString()
-
-    // Misc
-    fun getTextById(resourceId: Int): String {
-        val idString = getViewId(resourceId)
-        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
-        return if (view != null) {
-            try {
-                view.text
-            } catch (e: StaleObjectException) {
-                getTextById(resourceId)
-            }
-        } else {
-            takeScreenshot("exception")
-            throw TastingException("View with id \"$idString\" not found")
-        }
-    }
-
-    fun takeScreenshot(name: String) {
-        testDevice.takeScreenshot(TastingSpoonWrapper.getScreenshotDirectory(name))
-    }
+    // Waiting
 
     @JvmOverloads
     fun waitForId(resourceId: Int, milliseconds: Int = viewTimeout): UiObject2 {
@@ -536,9 +502,68 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun waitForNextActivity() {
-        testDevice.waitForWindowUpdate(testedPackageName, viewTimeout.toLong())
+    // Device control
+
+    fun pressBack() {
+        testDevice.pressBack()
     }
+
+    fun pressHome() {
+        testDevice.pressHome()
+    }
+
+    fun pressRecents() {
+        try {
+            testDevice.pressRecentApps()
+        } catch (e: RemoteException) {
+            throw TastingException(e)
+        }
+    }
+
+    fun changeScreenOrientation(screenOrientation: ScreenOrientation) {
+        when (screenOrientation) {
+            ScreenOrientation.PORTRAIT -> testDevice.setOrientationNatural()
+            ScreenOrientation.LEFT -> testDevice.setOrientationLeft()
+            ScreenOrientation.RIGHT -> testDevice.setOrientationRight()
+            ScreenOrientation.SENSOR -> testDevice.unfreezeRotation()
+        }
+    }
+
+    fun pressKeyCode(keyCode: Int) {
+        testDevice.pressKeyCode(keyCode)
+    }
+
+    fun drag(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
+        testDevice.drag(startX,startY,endX,endY,steps)
+    }
+
+    fun swipe(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
+        testDevice.swipe(startX,startY,endX,endY,steps)
+    }
+
+    fun takeScreenshot(name: String) {
+        testDevice.takeScreenshot(TastingSpoonWrapper.getScreenshotDirectory(name))
+    }
+
+    // Data generation
+
+    val firstName: String
+        get() = faker.name().firstName()
+
+    val lastName: String
+        get() = faker.name().lastName()
+
+    val fullName: String
+        get() = firstName + " " + lastName
+
+    val email: String
+        get() = faker.internet().safeEmailAddress()
+
+    fun getRandomString(length: Int): String = faker.lorem().characters(length)
+
+    fun getRandomNumber(min: Int, max: Int): String = faker.number().numberBetween(min, max).toString()
+
+    // Resource getting
 
     private fun getString(resourceId: Int): String = context.getString(resourceId)
 
