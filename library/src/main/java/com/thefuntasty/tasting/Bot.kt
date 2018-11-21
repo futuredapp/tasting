@@ -250,7 +250,7 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    // View Assertions
+    // View assertions
 
     fun notPresentByText(text: String) {
         try {
@@ -520,15 +520,6 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun changeScreenOrientation(screenOrientation: ScreenOrientation) {
-        when (screenOrientation) {
-            ScreenOrientation.PORTRAIT -> testDevice.setOrientationNatural()
-            ScreenOrientation.LEFT -> testDevice.setOrientationLeft()
-            ScreenOrientation.RIGHT -> testDevice.setOrientationRight()
-            ScreenOrientation.SENSOR -> testDevice.unfreezeRotation()
-        }
-    }
-
     fun pressKeyCode(keyCode: Int) {
         testDevice.pressKeyCode(keyCode)
     }
@@ -539,6 +530,15 @@ class Bot(private val testDevice: UiDevice) {
 
     fun swipe(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
         testDevice.swipe(startX,startY,endX,endY,steps)
+    }
+
+    fun changeScreenOrientation(screenOrientation: ScreenOrientation) {
+        when (screenOrientation) {
+            ScreenOrientation.PORTRAIT -> testDevice.setOrientationNatural()
+            ScreenOrientation.LEFT -> testDevice.setOrientationLeft()
+            ScreenOrientation.RIGHT -> testDevice.setOrientationRight()
+            ScreenOrientation.SENSOR -> testDevice.unfreezeRotation()
+        }
     }
 
     fun takeScreenshot(name: String) {
