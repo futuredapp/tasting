@@ -27,31 +27,41 @@ class Bot(private val testDevice: UiDevice) {
     var scrollTimeout = 2000
     var testedPackageName = context.packageName
 
-    // Fake data
-    val firstName: String
-        get() = faker.name().firstName()
+    // View actions
 
-    val lastName: String
-        get() = faker.name().lastName()
+    fun getViewById(resourceId: Int): UiObject2 {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
+        if (view != null) {
+            return view
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with id \"$idString\" not found")
+        }
+    }
 
-    val fullName: String
-        get() = firstName + " " + lastName
+    fun getViewByText(text: String): UiObject2 {
+        val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
+        if (view != null) {
+            return view
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with text \"$text\" not found")
+        }
+    }
 
-    val email: String
-        get() = faker.internet().safeEmailAddress()
-
-    // Actions
-    fun tapById(viewId: String) {
-        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout.toLong())
+    fun tapById(resourceId: Int) {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
         if (view != null) {
             try {
                 view.click()
             } catch (e: StaleObjectException) {
-                tapById(viewId)
+                tapById(resourceId)
             }
         } else {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$viewId\" not found")
+            throw TastingException("View with id \"$idString\" not found")
         }
     }
 
@@ -125,17 +135,18 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun writeById(viewId: String, writeText: String) {
-        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId).clazz("android.widget.EditText")), viewTimeout.toLong())
+    fun writeById(resourceId: Int, writeText: String) {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString).clazz("android.widget.EditText")), viewTimeout.toLong())
         if (view != null) {
             try {
                 view.text = writeText
             } catch (e: StaleObjectException) {
-                writeById(viewId, writeText)
+                writeById(resourceId, writeText)
             }
         } else {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$viewId\" not found")
+            throw TastingException("View with id \"$idString\" not found")
         }
     }
 
@@ -197,17 +208,18 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun scrollUntilId(direction: ScrollDirection, viewId: String) {
+    fun scrollUntilId(direction: ScrollDirection, resourceId: Int) {
+        val idString = getViewId(resourceId)
         var retry = 0
         do {
-            if (testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), scrollTimeout.toLong()) != null) {
+            if (testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), scrollTimeout.toLong()) != null) {
                 return
             }
             halfScroll(direction)
             retry++
         } while (retry <= scrollThreshold)
         takeScreenshot("exception")
-        throw TastingException("View with id \"$viewId\" not found")
+        throw TastingException("View with id \"$idString\" not found")
     }
 
     fun scrollUntilText(direction: ScrollDirection, text: String) {
@@ -223,23 +235,23 @@ class Bot(private val testDevice: UiDevice) {
         throw TastingException("View with text \"$text\" not found")
     }
 
-    fun pressBack() {
-        testDevice.pressBack()
-    }
-
-    fun pressHome() {
-        testDevice.pressHome()
-    }
-
-    fun pressRecents() {
-        try {
-            testDevice.pressRecentApps()
-        } catch (e: RemoteException) {
-            throw TastingException(e)
+    fun getTextById(resourceId: Int): String {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
+        return if (view != null) {
+            try {
+                view.text
+            } catch (e: StaleObjectException) {
+                getTextById(resourceId)
+            }
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with id \"$idString\" not found")
         }
     }
 
-    // Assertions
+    // View assertions
+
     fun notPresentByText(text: String) {
         try {
             assertNull("Text \"$text\" should not be present", waitForTextOrNull(text))
@@ -251,14 +263,15 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun notPresentById(viewId: String) {
+    fun notPresentById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertNull("View with id \"$viewId\" should not be present", waitForIdOrNull(viewId))
+            assertNull("View with id \"$idString\" should not be present", waitForIdOrNull(resourceId))
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            notPresentById(viewId)
+            notPresentById(resourceId)
         }
     }
 
@@ -273,102 +286,111 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun presentById(viewId: String) {
+    fun presentById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertNotNull("View with id \"$viewId\" is not present", waitForIdOrNull(viewId))
+            assertNotNull("View with id \"$idString\" is not present", waitForIdOrNull(resourceId))
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            presentById(viewId)
+            presentById(resourceId)
         }
     }
 
-    fun textInIdEquals(viewId: String, text: String) {
+    fun textInIdEquals(resourceId: Int, text: String) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("Text in view with id \"$viewId\" is not \"$text\"", waitForId(viewId).text == text)
+            assertTrue("Text in view with id \"$idString\" is not \"$text\"", waitForId(resourceId).text == text)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            textInIdEquals(viewId, text)
+            textInIdEquals(resourceId, text)
         }
     }
 
-    fun textInIdEqualsCaseInsensitive(viewId: String, text: String) {
+    fun textInIdEqualsCaseInsensitive(resourceId: Int, text: String) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("Text in view with id \"$viewId\" is not \"$text\"", waitForId(viewId).text.equals(text, ignoreCase = true))
+            assertTrue("Text in view with id \"$idString\" is not \"$text\"", waitForId(resourceId).text.equals(text, ignoreCase = true))
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            textInIdEqualsCaseInsensitive(viewId, text)
+            textInIdEqualsCaseInsensitive(resourceId, text)
         }
     }
 
-    fun textInIdContains(viewId: String, text: String) {
+    fun textInIdContains(resourceId: Int, text: String) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("Text in view with id \"$viewId\" does not contain \"$text\"", waitForId(viewId).text.contains(text))
+            assertTrue("Text in view with id \"$idString\" does not contain \"$text\"", waitForId(resourceId).text.contains(text))
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            textInIdContains(viewId, text)
+            textInIdContains(resourceId, text)
         }
     }
 
-    fun textInIdDiffer(viewId: String, text: String) {
+    fun textInIdDiffer(resourceId: Int, text: String) {
+        val idString = getViewId(resourceId)
         try {
-            assertFalse("Text in view with id \"$viewId\" should not be \"$text\"", waitForId(viewId).text == text)
+            assertFalse("Text in view with id \"$idString\" should not be \"$text\"", waitForId(resourceId).text == text)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            textInIdDiffer(viewId, text)
+            textInIdDiffer(resourceId, text)
         }
     }
 
-    fun enabledById(viewId: String) {
+    fun enabledById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("View with id \"$viewId\" should not be enabled", waitForId(viewId).isEnabled)
+            assertTrue("View with id \"$idString\" should not be enabled", waitForId(resourceId).isEnabled)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            enabledById(viewId)
+            enabledById(resourceId)
         }
     }
 
-    fun disabledById(viewId: String) {
+    fun disabledById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertFalse("View with id \"$viewId\" should not be disabled", waitForId(viewId).isEnabled)
+            assertFalse("View with id \"$idString\" should not be disabled", waitForId(resourceId).isEnabled)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            disabledById(viewId)
+            disabledById(resourceId)
         }
     }
 
-    fun checkedById(viewId: String) {
+    fun checkedById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("View with id \"$viewId\" is not checked", waitForId(viewId).isChecked)
+            assertTrue("View with id \"$idString\" is not checked", waitForId(resourceId).isChecked)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            checkedById(viewId)
+            checkedById(resourceId)
         }
     }
 
-    fun notCheckedById(viewId: String) {
+    fun notCheckedById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertFalse("View with id \"$viewId\" should not be checked", waitForId(viewId).isChecked)
+            assertFalse("View with id \"$idString\" should not be checked", waitForId(resourceId).isChecked)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            notCheckedById(viewId)
+            notCheckedById(resourceId)
         }
     }
 
@@ -394,25 +416,27 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun selectedById(viewId: String) {
+    fun selectedById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertTrue("View with id \"$viewId\" is not selected", waitForId(viewId).isSelected)
+            assertTrue("View with id \"$idString\" is not selected", waitForId(resourceId).isSelected)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            selectedById(viewId)
+            selectedById(resourceId)
         }
     }
 
-    fun notSelectedById(viewId: String) {
+    fun notSelectedById(resourceId: Int) {
+        val idString = getViewId(resourceId)
         try {
-            assertFalse("View with id \"$viewId\" should not be selected", waitForId(viewId).isSelected)
+            assertFalse("View with id \"$idString\" should not be selected", waitForId(resourceId).isSelected)
         } catch (e: AssertionError) {
             takeScreenshot("exception")
             throw TastingException(e)
         } catch (e: StaleObjectException) {
-            notSelectedById(viewId)
+            notSelectedById(resourceId)
         }
     }
 
@@ -438,30 +462,22 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun getRandomString(length: Int): String = faker.lorem().characters(length)
-
-    fun getRandomNumber(min: Int, max: Int): String = faker.number().numberBetween(min, max).toString()
-
-    // Misc
-    fun getTextById(viewId: String): String = waitForId(viewId).text
-
-    fun takeScreenshot(name: String) {
-        testDevice.takeScreenshot(TastingSpoonWrapper.getScreenshotDirectory(name))
-    }
+    // Waiting
 
     @JvmOverloads
-    fun waitForId(viewId: String, milliseconds: Int = viewTimeout): UiObject2 {
-        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), milliseconds.toLong())
+    fun waitForId(resourceId: Int, milliseconds: Int = viewTimeout): UiObject2 {
+        val idString = getViewId(resourceId)
+        val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), milliseconds.toLong())
         if (view == null) {
             takeScreenshot("exception")
-            throw TastingException("View with id \"$viewId\" not found")
+            throw TastingException("View with id \"$idString\" not found")
         } else {
             return view
         }
     }
 
-    fun waitForIdOrNull(viewId: String): UiObject2? =
-            testDevice.wait(Until.findObject(By.res(testedPackageName, viewId)), viewTimeout.toLong())
+    fun waitForIdOrNull(resourceId: Int): UiObject2? =
+            testDevice.wait(Until.findObject(By.res(testedPackageName, getViewId(resourceId))), viewTimeout.toLong())
 
     @JvmOverloads
     fun waitForText(text: String, milliseconds: Int = viewTimeout): UiObject2 {
@@ -486,11 +502,70 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun waitForNextActivity() {
-        testDevice.waitForWindowUpdate(testedPackageName, viewTimeout.toLong())
+    // Device control
+
+    fun pressBack() {
+        testDevice.pressBack()
     }
 
-    fun getString(resourceId: Int): String = context.getString(resourceId)
+    fun pressHome() {
+        testDevice.pressHome()
+    }
 
-    fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
+    fun pressRecents() {
+        try {
+            testDevice.pressRecentApps()
+        } catch (e: RemoteException) {
+            throw TastingException(e)
+        }
+    }
+
+    fun pressKeyCode(keyCode: Int) {
+        testDevice.pressKeyCode(keyCode)
+    }
+
+    fun drag(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
+        testDevice.drag(startX, startY, endX, endY, steps)
+    }
+
+    fun swipe(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
+        testDevice.swipe(startX, startY, endX, endY, steps)
+    }
+
+    fun changeScreenOrientation(screenOrientation: ScreenOrientation) {
+        when (screenOrientation) {
+            ScreenOrientation.PORTRAIT -> testDevice.setOrientationNatural()
+            ScreenOrientation.LEFT -> testDevice.setOrientationLeft()
+            ScreenOrientation.RIGHT -> testDevice.setOrientationRight()
+            ScreenOrientation.SENSOR -> testDevice.unfreezeRotation()
+        }
+    }
+
+    fun takeScreenshot(name: String) {
+        testDevice.takeScreenshot(TastingSpoonWrapper.getScreenshotDirectory(name))
+    }
+
+    // Data generation
+
+    val firstName: String
+        get() = faker.name().firstName()
+
+    val lastName: String
+        get() = faker.name().lastName()
+
+    val fullName: String
+        get() = firstName + " " + lastName
+
+    val email: String
+        get() = faker.internet().safeEmailAddress()
+
+    fun getRandomString(length: Int): String = faker.lorem().characters(length)
+
+    fun getRandomNumber(min: Int, max: Int): String = faker.number().numberBetween(min, max).toString()
+
+    // Resource getting
+
+    private fun getString(resourceId: Int): String = context.getString(resourceId)
+
+    private fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
 }
