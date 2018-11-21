@@ -1,6 +1,6 @@
 # Tasting #
 
-Tasting is Android library for easy acceptance testing, which features super-easy API and [Spoon](https://github.com/square/spoon) screenshot wrapper class, so you can easily take screenshots while running your instrumentation tests simultaneously on multiple devices and recieve pretty cool report afterwards.
+Tasting is Android library which simplifies writing UI tests and wraps [Spoon](https://github.com/square/spoon) screen capturing, so you can take screenshots in your tests and see them in HTML report aftewards.
 
 
 ## Installation
@@ -38,8 +38,8 @@ spoon {
 
 Add the dependencies you need:
 ```groovy
-androidTestImplementation 'com.github.thefuntasty:tasting:1.0.1'
-androidTestImplementation 'com.android.support.test:runner:1.0.1'
+androidTestImplementation 'com.github.thefuntasty:tasting:1.0.7'
+androidTestImplementation 'com.android.support.test:runner:1.0.2'
 androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 ```
 
@@ -48,12 +48,12 @@ androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 2. Override beforeSetUp method where you can change bot settings or delete persistent data (to make every test start from the same initial state)
 3. Override afterSetUp method where you can make bot wait for app to load
 ```kotlin
-class BaseScenario : Scenario() {
+open class BaseScenario : Scenario() {
 
     override fun beforeSetUp() {
         bot.scrollThreshold = SCROLL_THRESHOLD
         bot.viewTimeout = VIEW_TIEMOUT
-        Hawk.deleteAll()
+        //delete persistence here
     }
 
     override fun afterSetUp() {
@@ -82,13 +82,13 @@ class SampleScenario : BaseScenario() {
 ## Running tests
 
 1. Open terminal at your Android project directory
-2. Run ./gradlew spoonDebug (you can specify any other build variant eg. spoonClient)
+2. Run ./gradlew spoonDebug (or specify any other build variant eg. spoonClient)
 
 ## Checking results
 
 1. You can see test progress and result in terminal window
 ![Terminal Output](pictures/terminal.png)
-2. After finishing all tests, interactive visual test report is generated in your project directory (build/spoon-output/...), including screenshots you took with bot.takeScreenshot method, screenshot is also taken automatically when test fails, so you have more clues about what went wrong
+2. After finishing all tests, interactive HTML test report is generated in your project directory (build/spoon-output/...), including screenshots you took with bot.takeScreenshot method, screenshot is also taken automatically on test failure, so you can find out what went wrong easier
 ![Test Results](pictures/html.png)
 
 ## License
