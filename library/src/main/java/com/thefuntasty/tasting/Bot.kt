@@ -29,7 +29,7 @@ class Bot(private val testDevice: UiDevice) {
 
     // View actions
 
-    fun getViewById(resourceId: Int) : UiObject2 {
+    fun getViewById(resourceId: Int): UiObject2 {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
         if (view != null) {
@@ -40,7 +40,7 @@ class Bot(private val testDevice: UiDevice) {
         }
     }
 
-    fun getViewByText(text: String) : UiObject2 {
+    fun getViewByText(text: String): UiObject2 {
         val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
         if (view != null) {
             return view
@@ -525,11 +525,11 @@ class Bot(private val testDevice: UiDevice) {
     }
 
     fun drag(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
-        testDevice.drag(startX,startY,endX,endY,steps)
+        testDevice.drag(startX, startY, endX, endY, steps)
     }
 
     fun swipe(startX: Int, startY: Int, endX: Int, endY: Int, steps: Int) {
-        testDevice.swipe(startX,startY,endX,endY,steps)
+        testDevice.swipe(startX, startY, endX, endY, steps)
     }
 
     fun changeScreenOrientation(screenOrientation: ScreenOrientation) {
