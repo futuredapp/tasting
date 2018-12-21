@@ -15,7 +15,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
 
-
 class Bot(val testDevice: UiDevice) {
 
     private val context: Context = InstrumentationRegistry.getTargetContext()
