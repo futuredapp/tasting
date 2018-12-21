@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="32dp"
+	tools:context=".AboutActivity">
+
+	<TextView
+		android:id="@+id/about"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:padding="8dp"
+		android:text="@string/about"
+		android:textColor="@color/colorPrimaryDark"
+		android:textSize="18sp"/>
+
+	<TextView
+		android:id="@+id/author"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/about"
+		android:gravity="center_horizontal"
+		android:text="@string/author"
+		android:textColor="@color/colorAccent"
+		android:textSize="14sp"/>
+
+	<TextView
+		android:id="@+id/github"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/author"
+		android:autoLink="web"
+		android:gravity="center_horizontal"
+		android:text="@string/github"
+		android:textColor="@color/colorPrimary"
+		android:textSize="14sp"/>
+
+</RelativeLayout>

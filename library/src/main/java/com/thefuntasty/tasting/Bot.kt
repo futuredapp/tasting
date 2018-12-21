@@ -15,7 +15,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
 
-class Bot(private val testDevice: UiDevice) {
+class Bot(val testDevice: UiDevice) {
 
     private val context: Context = InstrumentationRegistry.getTargetContext()
     private val faker = Faker()
@@ -252,49 +252,57 @@ class Bot(private val testDevice: UiDevice) {
 
     // View assertions
 
-    fun notPresentByText(text: String) {
-        try {
-            assertNull("Text \"$text\" should not be present", waitForTextOrNull(text))
-        } catch (e: AssertionError) {
-            takeScreenshot("exception")
-            throw TastingException(e)
-        } catch (e: StaleObjectException) {
-            notPresentByText(text)
+    fun notPresentByText(vararg texts: String) {
+        for (text in texts) {
+            try {
+                assertNull("Text \"$text\" should not be present", waitForTextOrNull(text))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                notPresentByText(text)
+            }
         }
     }
 
-    fun notPresentById(resourceId: Int) {
-        val idString = getViewId(resourceId)
-        try {
-            assertNull("View with id \"$idString\" should not be present", waitForIdOrNull(resourceId))
-        } catch (e: AssertionError) {
-            takeScreenshot("exception")
-            throw TastingException(e)
-        } catch (e: StaleObjectException) {
-            notPresentById(resourceId)
+    fun notPresentById(vararg resourceIds: Int) {
+        for (resourceId in resourceIds) {
+            val idString = getViewId(resourceId)
+            try {
+                assertNull("View with id \"$idString\" should not be present", waitForIdOrNull(resourceId))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                notPresentById(resourceId)
+            }
         }
     }
 
-    fun presentByText(text: String) {
-        try {
-            assertNotNull("Text \"$text\" is not present", waitForTextOrNull(text))
-        } catch (e: AssertionError) {
-            takeScreenshot("exception")
-            throw TastingException(e)
-        } catch (e: StaleObjectException) {
-            presentByText(text)
+    fun presentByText(vararg texts: String) {
+        for (text in texts) {
+            try {
+                assertNotNull("Text \"$text\" is not present", waitForTextOrNull(text))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                presentByText(text)
+            }
         }
     }
 
-    fun presentById(resourceId: Int) {
-        val idString = getViewId(resourceId)
-        try {
-            assertNotNull("View with id \"$idString\" is not present", waitForIdOrNull(resourceId))
-        } catch (e: AssertionError) {
-            takeScreenshot("exception")
-            throw TastingException(e)
-        } catch (e: StaleObjectException) {
-            presentById(resourceId)
+    fun presentById(vararg resourceIds: Int) {
+        for (resourceId in resourceIds) {
+            val idString = getViewId(resourceId)
+            try {
+                assertNotNull("View with id \"$idString\" is not present", waitForIdOrNull(resourceId))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                presentById(resourceId)
+            }
         }
     }
 
@@ -565,7 +573,7 @@ class Bot(private val testDevice: UiDevice) {
 
     // Resource getting
 
-    private fun getString(resourceId: Int): String = context.getString(resourceId)
+    fun getString(resourceId: Int): String = context.getString(resourceId)
 
-    private fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
+    fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
 }

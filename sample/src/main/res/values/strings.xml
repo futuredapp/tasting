@@ -8,4 +8,8 @@
 	<string name="start">Submit</string>
 	<string name="message">Type your message here</string>
 	<string name="check">✅</string>
+	<string name="about">About</string>
+	<string name="about_title">Developed by</string>
+	<string name="author">Intergalactic Penguin</string>
+	<string name="github">http://github.com/IntergalacticPenguin</string>
 </resources>
