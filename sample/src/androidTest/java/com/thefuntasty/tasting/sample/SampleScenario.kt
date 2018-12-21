@@ -10,26 +10,41 @@ class SampleScenario : BaseScenario() {
 
     @Test
     fun login() {
-        bot.writeById(R.id.login_field, bot.email)
-        bot.writeById(R.id.password_field, bot.getRandomString(21))
-        bot.tapById(R.id.login_button)
+        bot.apply {
+            writeById(R.id.login_field, email)
+            writeById(R.id.password_field, getRandomString(21))
+            tapById(R.id.login_button)
 
-        bot.presentById(R.id.login_check)
-        bot.takeScreenshot("loggedIn")
+            presentById(R.id.login_check)
+            takeScreenshot("loggedIn")
+        }
     }
 
     @Test
     fun updateMessage() {
-        val message = bot.getRandomString(64)
+        bot.apply {
+            val message = getRandomString(64)
 
-        bot.writeById(R.id.message_field, message)
-        bot.tapById(R.id.fab)
+            writeById(R.id.message_field, message)
+            tapById(R.id.fab)
 
-        bot.textInIdEquals(R.id.snackbar_text, message)
-        bot.takeScreenshot("messageSent")
+            textInIdEquals(R.id.snackbar_text, message)
+            takeScreenshot("messageSent")
 
-        bot.tapByDescription("Open navigation drawer")
-        bot.textInIdEquals(R.id.message_view, message)
-        bot.takeScreenshot("messageShown")
+            tapByDescription("Open navigation drawer")
+            textInIdEquals(R.id.message_view, message)
+            takeScreenshot("messageShown")
+        }
     }
+
+    @Test
+    fun openAbout() {
+        bot.apply {
+            tapByContainedInDescription("navigation drawer")
+            tapByText(getString(R.string.about))
+            presentById(R.id.about, R.id.author, R.id.github)
+            takeScreenshot("about")
+        }
+    }
+
 }
