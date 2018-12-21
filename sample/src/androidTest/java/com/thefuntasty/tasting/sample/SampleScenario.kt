@@ -46,5 +46,4 @@ class SampleScenario : BaseScenario() {
             takeScreenshot("about")
         }
     }
-
 }
