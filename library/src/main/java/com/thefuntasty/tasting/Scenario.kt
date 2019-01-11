@@ -1,6 +1,5 @@
 package com.thefuntasty.tasting
 
-import android.content.Intent
 import android.support.test.InstrumentationRegistry
 import android.support.test.uiautomator.UiDevice
 import org.junit.Before
@@ -19,12 +18,7 @@ abstract class Scenario {
             testDevice.pressKeyCode(1) // Unlocks screen - works for some devices only
         }
 
-        // Launch the app
-        val context = InstrumentationRegistry.getContext()
-        val intent = context.packageManager
-                .getLaunchIntentForPackage(bot.testedPackageName)
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
-        context.startActivity(intent)
+        bot.launchApp()
 
         // Here you can wait for your app to load
         afterSetUp()

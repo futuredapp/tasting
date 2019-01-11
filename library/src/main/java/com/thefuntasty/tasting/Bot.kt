@@ -1,6 +1,7 @@
 package com.thefuntasty.tasting
 
 import android.content.Context
+import android.content.Intent
 import android.os.RemoteException
 import android.support.test.InstrumentationRegistry
 import android.support.test.uiautomator.By
@@ -50,14 +51,14 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
-    fun tapById(resourceId: Int) {
+    fun tapById(resourceId: Int, duration: Int = 0) {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
         if (view != null) {
             try {
-                view.click()
+                view.click(duration.toLong())
             } catch (e: StaleObjectException) {
-                tapById(resourceId)
+                tapById(resourceId, duration)
             }
         } else {
             takeScreenshot("exception")
@@ -65,13 +66,13 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
-    fun tapByText(text: String) {
+    fun tapByText(text: String, duration: Int = 0) {
         val view = testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
         if (view != null) {
             try {
-                view.click()
+                view.click(duration.toLong())
             } catch (e: StaleObjectException) {
-                tapByText(text)
+                tapByText(text, duration)
             }
         } else {
             takeScreenshot("exception")
@@ -79,13 +80,13 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
-    fun tapByContainedText(text: String) {
+    fun tapByContainedText(text: String, duration: Int = 0) {
         val view = testDevice.wait(Until.findObject(By.textContains(text)), viewTimeout.toLong())
         if (view != null) {
             try {
-                view.click()
+                view.click(duration.toLong())
             } catch (e: StaleObjectException) {
-                tapByContainedText(text)
+                tapByContainedText(text, duration)
             }
         } else {
             takeScreenshot("exception")
@@ -93,13 +94,13 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
-    fun tapByDescription(contentDescription: String) {
+    fun tapByDescription(contentDescription: String, duration: Int = 0) {
         val view = testDevice.wait(Until.findObject(By.desc(contentDescription)), viewTimeout.toLong())
         if (view != null) {
             try {
-                view.click()
+                view.click(duration.toLong())
             } catch (e: StaleObjectException) {
-                tapByDescription(contentDescription)
+                tapByDescription(contentDescription, duration)
             }
         } else {
             takeScreenshot("exception")
@@ -107,13 +108,13 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
-    fun tapByContainedInDescription(contentDescription: String) {
+    fun tapByContainedInDescription(contentDescription: String, duration: Int = 0) {
         val view = testDevice.wait(Until.findObject(By.descContains(contentDescription)), viewTimeout.toLong())
         if (view != null) {
             try {
-                view.click()
+                view.click(duration.toLong())
             } catch (e: StaleObjectException) {
-                tapByContainedInDescription(contentDescription)
+                tapByContainedInDescription(contentDescription, duration)
             }
         } else {
             takeScreenshot("exception")
@@ -576,4 +577,32 @@ class Bot(val testDevice: UiDevice) {
     fun getString(resourceId: Int): String = context.getString(resourceId)
 
     fun getViewId(resourceId: Int): String = context.resources.getResourceEntryName(resourceId)
+
+    // Other
+
+    fun launchApp() {
+        val context = InstrumentationRegistry.getContext()
+        val intent = context.packageManager
+                .getLaunchIntentForPackage(testedPackageName)
+        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
+        context.startActivity(intent)
+    }
+
+    fun takeCameraPicture() {
+        val shutterView = testDevice.wait(Until.findObject(By.res("com.android.camera", "shutter_button")), viewTimeout.toLong())
+        if (shutterView != null) {
+            shutterView.click()
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("Taking picture failed - shutter button not found.")
+        }
+
+        val doneView = testDevice.wait(Until.findObject(By.res("com.android.camera", "btn_done")), viewTimeout.toLong())
+        if (doneView != null) {
+            doneView.click()
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("Taking picture failed - done button not found.")
+        }
+    }
 }
