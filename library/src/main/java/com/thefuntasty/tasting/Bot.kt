@@ -15,6 +15,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 
 class Bot(val testDevice: UiDevice) {
 
@@ -51,6 +52,16 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
+    fun getViewByText(pattern: Pattern): UiObject2 {
+        val view = testDevice.wait(Until.findObject(By.text(pattern)), viewTimeout.toLong())
+        if (view != null) {
+            return view
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with pattern \"$pattern\" not found")
+        }
+    }
+
     fun tapById(resourceId: Int, duration: Int = 0) {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
@@ -77,6 +88,20 @@ class Bot(val testDevice: UiDevice) {
         } else {
             takeScreenshot("exception")
             throw TastingException("View with text \"$text\" not found")
+        }
+    }
+
+    fun tapByText(pattern: Pattern, duration: Int = 0) {
+        val view = testDevice.wait(Until.findObject(By.text(pattern)), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.click(duration.toLong())
+            } catch (e: StaleObjectException) {
+                tapByText(pattern, duration)
+            }
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with pattern \"$pattern\" not found")
         }
     }
 
@@ -133,6 +158,20 @@ class Bot(val testDevice: UiDevice) {
         } else {
             takeScreenshot("exception")
             throw TastingException("View with text \"$findText\" not found")
+        }
+    }
+
+    fun writeByText(findTextPattern: Pattern, writeText: String) {
+        val view = testDevice.wait(Until.findObject(By.text(findTextPattern).clazz("android.widget.EditText")), viewTimeout.toLong())
+        if (view != null) {
+            try {
+                view.text = writeText
+            } catch (e: StaleObjectException) {
+                writeByText(findTextPattern, writeText)
+            }
+        } else {
+            takeScreenshot("exception")
+            throw TastingException("View with pattern \"$findTextPattern\" not found")
         }
     }
 
@@ -236,6 +275,19 @@ class Bot(val testDevice: UiDevice) {
         throw TastingException("View with text \"$text\" not found")
     }
 
+    fun scrollUntilText(direction: ScrollDirection, pattern: Pattern) {
+        var retry = 0
+        do {
+            if (testDevice.wait(Until.findObject(By.text(pattern)), scrollTimeout.toLong()) != null) {
+                return
+            }
+            halfScroll(direction)
+            retry++
+        } while (retry <= scrollThreshold)
+        takeScreenshot("exception")
+        throw TastingException("View with pattern \"$pattern\" not found")
+    }
+
     fun getTextById(resourceId: Int): String {
         val idString = getViewId(resourceId)
         val view = testDevice.wait(Until.findObject(By.res(testedPackageName, idString)), viewTimeout.toLong())
@@ -266,6 +318,19 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
+    fun notPresentByText(vararg patterns: Pattern) {
+        for (pattern in patterns) {
+            try {
+                assertNull("Pattern \"$pattern\" should not be present", waitForTextOrNull(pattern))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                notPresentByText(pattern)
+            }
+        }
+    }
+
     fun notPresentById(vararg resourceIds: Int) {
         for (resourceId in resourceIds) {
             val idString = getViewId(resourceId)
@@ -289,6 +354,19 @@ class Bot(val testDevice: UiDevice) {
                 throw TastingException(e)
             } catch (e: StaleObjectException) {
                 presentByText(text)
+            }
+        }
+    }
+
+    fun presentByText(vararg patterns: Pattern) {
+        for (pattern in patterns) {
+            try {
+                assertNotNull("Pattern \"$pattern\" is not present", waitForTextOrNull(pattern))
+            } catch (e: AssertionError) {
+                takeScreenshot("exception")
+                throw TastingException(e)
+            } catch (e: StaleObjectException) {
+                presentByText(pattern)
             }
         }
     }
@@ -414,6 +492,17 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
+    fun checkedByText(pattern: Pattern) {
+        try {
+            assertTrue("View with pattern \"$pattern\" is not checked", waitForText(pattern).isChecked)
+        } catch (e: AssertionError) {
+            takeScreenshot("exception")
+            throw TastingException(e)
+        } catch (e: StaleObjectException) {
+            checkedByText(pattern)
+        }
+    }
+
     fun notCheckedByText(text: String) {
         try {
             assertFalse("View with text \"$text\" should not be checked", waitForText(text).isChecked)
@@ -422,6 +511,17 @@ class Bot(val testDevice: UiDevice) {
             throw TastingException(e)
         } catch (e: StaleObjectException) {
             notCheckedByText(text)
+        }
+    }
+
+    fun notCheckedByText(pattern: Pattern) {
+        try {
+            assertFalse("View with pattern \"$pattern\" should not be checked", waitForText(pattern).isChecked)
+        } catch (e: AssertionError) {
+            takeScreenshot("exception")
+            throw TastingException(e)
+        } catch (e: StaleObjectException) {
+            notCheckedByText(pattern)
         }
     }
 
@@ -460,6 +560,17 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
+    fun selectedByText(pattern: Pattern) {
+        try {
+            assertTrue("View with pattern \"$pattern\" is not selected", waitForText(pattern).isSelected)
+        } catch (e: AssertionError) {
+            takeScreenshot("exception")
+            throw TastingException(e)
+        } catch (e: StaleObjectException) {
+            selectedByText(pattern)
+        }
+    }
+
     fun notSelectedByText(text: String) {
         try {
             assertFalse("View with text \"$text\" should not be selected", waitForText(text).isSelected)
@@ -468,6 +579,17 @@ class Bot(val testDevice: UiDevice) {
             throw TastingException(e)
         } catch (e: StaleObjectException) {
             notSelectedByText(text)
+        }
+    }
+
+    fun notSelectedByText(pattern: Pattern) {
+        try {
+            assertFalse("View with pattern \"$pattern\" should not be selected", waitForText(pattern).isSelected)
+        } catch (e: AssertionError) {
+            takeScreenshot("exception")
+            throw TastingException(e)
+        } catch (e: StaleObjectException) {
+            notSelectedByText(pattern)
         }
     }
 
@@ -499,8 +621,22 @@ class Bot(val testDevice: UiDevice) {
         }
     }
 
+    @JvmOverloads
+    fun waitForText(pattern: Pattern, milliseconds: Int = viewTimeout): UiObject2 {
+        val view = testDevice.wait(Until.findObject(By.text(pattern)), milliseconds.toLong())
+        if (view == null) {
+            takeScreenshot("exception")
+            throw TastingException("View with pattern \"$pattern\" not found")
+        } else {
+            return view
+        }
+    }
+
     fun waitForTextOrNull(text: String): UiObject2? =
             testDevice.wait(Until.findObject(By.text(text)), viewTimeout.toLong())
+
+    fun waitForTextOrNull(pattern: Pattern): UiObject2? =
+            testDevice.wait(Until.findObject(By.text(pattern)), viewTimeout.toLong())
 
     fun wait(seconds: Int) {
         // This is ugly but it works
