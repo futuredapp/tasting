@@ -40,7 +40,7 @@ spoon {
 
 Add the dependencies you need:
 ```groovy
-androidTestImplementation 'com.github.thefuntasty:tasting:1.0.7'
+androidTestImplementation 'com.github.thefuntasty:tasting:latestVersion'
 androidTestImplementation 'com.android.support.test:runner:1.0.2'
 androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 ```
