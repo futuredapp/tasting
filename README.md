@@ -67,8 +67,7 @@ open class BaseScenario : Scenario() {
 }
 ```
 
-4. Create eg. `AccountScenario` class (extending `BaseScenario`) which
-will contain all tests regarding user account
+4. Create eg. `AccountScenario` class (extending `BaseScenario`) which will contain all tests regarding user account
 
 ```kotlin
 @RunWith(AndroidJUnit4::class)
@@ -93,7 +92,7 @@ class SampleScenario : BaseScenario() {
 
 ### Checking results
 
-1. You can see test progress and results in terminal window
+1. You can see test progress and result in terminal window
 
 ![Terminal Output](pictures/terminal.png)
 
