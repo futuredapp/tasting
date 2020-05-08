@@ -1,4 +1,4 @@
-![Tasting](pictures/logo.svg)
+<img align="right" src="pictures/logo.svg">
 
 # Tasting #
 
